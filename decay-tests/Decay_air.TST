@@ -1,0 +1,26 @@
+CATMAN TEST FILE
+PATH=C:\CatmanProjects\Exp_Meth 2022\Terje
+Version=catmanEasy university license
+Job name=Job1
+Data file with path=C:\CatmanProjects\Exp_Meth 2022\Terje\Decay_air_#2_VIV_2022.bin
+Data file=Decay_air_#2_VIV_2022.bin
+File comment=
+Time zone=W. Europe Daylight Time (UTC+2:00)
+Operator=
+Department=
+Comment=
+Default sample rate=50 Hz
+Slow sample rate=100 Hz
+Fast sample rate=200 Hz
+Number of samples default sample rate=0
+Number of samples slow sample rate=0
+Number of samples fast sample rate=438351
+Saving mode=PROMPT
+Master/Slave mode=Yes
+Start mode=Manual
+Start time=2022-09-23 13:25:26
+Stop mode=Manual
+Stop time=2022-09-23 14:01:59
+catmanEasy/AP version=5.2.2.19
+Numerical precision=8 Byte Float
+DATAFILE=C:\CatmanProjects\Exp_Meth 2022\Terje\Decay_air_#2_VIV_2022.bin

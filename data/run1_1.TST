@@ -1,0 +1,27 @@
+CATMAN TEST FILE
+PATH=F:\HBM\catmanEasy\DATA\Exp_Meth\Lab 2\Lab2_VIV\Group3
+Version=catmanEasy university license
+Job name=Job1
+Data file with path=F:\HBM\catmanEasy\DATA\Exp_Meth\Lab 2\Lab2_VIV\Group3\run1_1.BIN
+Data file=run1_1.BIN
+DAQ project=18-09-2023_setup_lab2_VIV.MEP
+File comment=
+Time zone=W. Europe Daylight Time (UTC+2:00)
+Operator=
+Department=
+Comment=
+Default sample rate=200 Hz
+Slow sample rate=5 Hz
+Fast sample rate=2400 Hz
+Number of samples default sample rate=7236
+Number of samples slow sample rate=0
+Number of samples fast sample rate=0
+Saving mode=PROMPT
+Leader/Follower mode=Yes
+Start mode=Manual
+Start time=2023/09/27 09:24:15
+Stop mode=Time
+Stop time=2023/09/27 09:24:51
+catmanEasy/AP version=5.5.3.13
+Numerical precision=8 Byte Float
+DATAFILE=F:\HBM\catmanEasy\DATA\Exp_Meth\Lab 2\Lab2_VIV\Group3\run1_1.BIN
