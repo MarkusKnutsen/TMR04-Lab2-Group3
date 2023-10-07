@@ -67,7 +67,14 @@ def transverse_data(signal, diameter, velocity, sample_fq, period):
     # The highest absolute value of the signal is selected as the max Bending Moment
     BendingMoment = max(max(signal), abs(min(signal)))
 
-    return St, BendingMoment
+    return St, BendingMoment, peak_frequency
+
+# Function for calculating the mean in-line force
+
+def in_line_data(signal):
+    # the mean value over the selected period 
+    bending_moment = np.abs(np.mean(signal))
+    return bending_moment
 
 # Function for plotting the signal. The peaks are plotted, as well as the negative and positive bending moment
 
@@ -156,3 +163,63 @@ def plot_signal(signal, start, end, x_axis, name):
     plt.title(name + ' | Peaks = ' + str(len(pos_peaks) + len(neg_peaks)) + ' | Max value = ' + str(np.round(max(signal), 3)) +
               ', Min value = ' + str(np.round(min(signal), 3)))
     plt.show()
+
+def find_closest_number(target, number_list):
+    # if not number_list:
+    #     return None, None  # Return None for both closest_number and index if the list is empty
+
+    closest_number = number_list[0]  # Initialize the closest_number with the first element
+    min_difference = abs(target - closest_number)  # Initialize the minimum difference
+    closest_index = 0  # Initialize the index of the closest number
+
+    for index, number in enumerate(number_list):
+        difference = abs(target - number)
+        if difference < min_difference:
+            min_difference = difference
+            closest_number = number
+            closest_index = index
+
+    return closest_number, closest_index
+
+def instant_freq(signal,index):
+    # This is a weighting value to move the scale of the signal up from the 0-line. This is to avoid errors with signs
+    m = 200
+
+    # Vectors to store the positive and negative values of the signal are initialized
+    vec_pos = []
+    vec_neg = []
+
+    # Iterating through the values in the signal and adding them to the correct vector. 0 is added if the value is not added to preserve the shape of the vectors in the plotting
+    for elem in signal:
+        if elem < 0:
+            # 0 is added if the value is not the corresponding sign, to preserve the shape of the vectors in the plotting
+            vec_pos.append(0)
+            vec_neg.append(elem)
+        if elem >= 0:
+            vec_pos.append(elem)
+            vec_neg.append(0)
+    # The signal is elevated by m, such that all peaks are included, even those that might register below zero
+    pos_weighted_signal = [value+m for value in signal]
+    # The signal is flipped by multiplying with -1, and elevated by m. This is to turn all valleys in the signal to peaks
+    #neg_weighted_signal = [(value*(-1))+m for value in signal]
+
+    # The indices of all the peaks and valleys are calculated
+    pos_peaks = sp.signal.find_peaks(
+        pos_weighted_signal, height=m*0.25, distance=30)[0]
+    #neg_peaks = sp.signal.find_peaks(
+    #    neg_weighted_signal, height=m*0.25, distance=30)[0]
+    
+    # from index, find closest pos peak 
+    closest_peak, closest_index=find_closest_number(index, pos_peaks)
+    #print(closest_index)
+    #find the distance to the next peak
+    if closest_index>=len(pos_peaks)-1:   #little trick to stay inside the table, gives us the same frequency for the last two peaks
+        #print('closest_index = ',closest_index)
+        closest_index=closest_index-2
+        
+    period=pos_peaks[closest_index+1]-pos_peaks[closest_index]
+    frequency=1/period
+    return frequency, closest_peak, pos_peaks
+
+
+
