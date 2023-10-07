@@ -72,7 +72,7 @@ InLineBending=np.zeros([3,len(reader)])
 St=np.zeros([3,len(reader)])
 
 #List for storing the Lock-in frequency
-Vibration_freq=np.zeros([3,len(reader)])
+Vibration_mean_freq=np.zeros([3,len(reader)])
 
 # Variable to keep track of the runs. rc stands for run counter
 rc = 0
@@ -102,7 +102,7 @@ for run in reader:
         #print(round(sensor/2)-1)
         St[round(sensor/2)-1][rc] = strouhal
         BendingMoment[round(sensor/2)-1][rc] = moment
-        Vibration_freq[round(sensor/2)-1][rc]=freq
+        Vibration_mean_freq[round(sensor/2)-1][rc]=freq
         InLineBending[round(sensor/2)-1][rc]=in_line_data(signal)
         
         # If un-commented, the signal can be plotted
@@ -114,13 +114,21 @@ for run in reader:
 #%%
 # \-- Plotting --/
 
+# Creation of the different Reynolds number for each pipe
+diameter=[0.029,0.025,0.032]
+Re=np.zeros([3,len(velocity_levels)])
+for i in [0,1,2]:
+    for j in range(len(velocity_levels)):
+        Re[i][j]=velocity_levels[j]*diameter[i]/(10**-6)
+
+
 # Plotting the Strouhal Number against the Reynolds number. Both lines and points are plotted
-plt.plot(Re, St[0], color='green', label='Pipe with Streaks')
-plt.plot(Re, St[0], 'o', color='green')
-plt.plot(Re, St[1], color='steelblue', label='Original Pipe')
-plt.plot(Re, St[1], 'o', color='navy')
-plt.plot(Re, St[2], color='hotpink', label='Perforated Pipe')
-plt.plot(Re, St[2], 'o', color='hotpink')
+plt.plot(Re[0], St[0], color='green', label='Pipe with Streaks')
+plt.plot(Re[0], St[0], 'o', color='green')
+plt.plot(Re[1], St[1], color='steelblue', label='Original Pipe')
+plt.plot(Re[1], St[1], 'o', color='steelblue')
+plt.plot(Re[2], St[2], color='hotpink', label='Perforated Pipe')
+plt.plot(Re[2], St[2], 'o', color='hotpink')
 
 # Labeling the units on the axis
 plt.xlabel('Re')
@@ -137,7 +145,7 @@ plt.show()
 plt.plot(velocity_levels, St[0], color='green', label='Pipe with Streaks')
 plt.plot(velocity_levels, St[0], 'o', color='green')
 plt.plot(velocity_levels, St[1], color='steelblue', label='Original Pipe')
-plt.plot(velocity_levels, St[1], 'o', color='navy')
+plt.plot(velocity_levels, St[1], 'o', color='steelblue')
 plt.plot(velocity_levels, St[2], color='hotpink', label='Perforated Pipe')
 plt.plot(velocity_levels, St[2], 'o', color='hotpink')
 
@@ -152,19 +160,19 @@ plt.legend()
 plt.show()
 
 # Plotting the Bending moment against the Reynolds number. Both lines and points are plotted
-plt.plot(Re, BendingMoment[0], color='green', label='Pipe with Streaks')
-plt.plot(Re, BendingMoment[0], 'o', color='green')
-plt.plot(Re, BendingMoment[1], color='steelblue', label='Original Pipe')
-plt.plot(Re, BendingMoment[1], 'o', color='navy')
-plt.plot(Re, BendingMoment[2], color='hotpink', label='Perforated Pipe')
-plt.plot(Re, BendingMoment[2], 'o', color='hotpink')
+plt.plot(Re[0], BendingMoment[0], color='green', label='Pipe with Streaks')
+plt.plot(Re[0], BendingMoment[0], 'o', color='green')
+plt.plot(Re[1], BendingMoment[1], color='steelblue', label='Original Pipe')
+plt.plot(Re[1], BendingMoment[1], 'o', color='steelblue')
+plt.plot(Re[2], BendingMoment[2], color='hotpink', label='Perforated Pipe')
+plt.plot(Re[2], BendingMoment[2], 'o', color='hotpink')
 
 # Labeling the units on the axis
 plt.ylabel('Bending moment (Nm)')
 plt.xlabel('Re')
 
 # Title is selected
-plt.title('Bending Moments')
+plt.title('Cross Flow max Bending Moments')
 
 plt.legend()
 plt.show()
@@ -173,7 +181,7 @@ plt.show()
 plt.plot(velocity_levels, BendingMoment[0], color='green', label='Pipe with Streaks')
 plt.plot(velocity_levels, BendingMoment[0], 'o', color='green')
 plt.plot(velocity_levels, BendingMoment[1], color='steelblue', label='Original Pipe')
-plt.plot(velocity_levels, BendingMoment[1], 'o', color='navy')
+plt.plot(velocity_levels, BendingMoment[1], 'o', color='steelblue')
 plt.plot(velocity_levels, BendingMoment[2], color='hotpink', label='Perforated Pipe')
 plt.plot(velocity_levels, BendingMoment[2], 'o', color='hotpink')
 
@@ -188,12 +196,12 @@ plt.legend()
 plt.show()
 
 # Plotting the in line Bending moment against the Reynolds number. Both lines and points are plotted
-plt.plot(Re, InLineBending[0], color='green', label='Pipe with Streaks')
-plt.plot(Re, InLineBending[0], 'o', color='green')
-plt.plot(Re, InLineBending[1], color='steelblue', label='Original Pipe')
-plt.plot(Re, InLineBending[1], 'o', color='navy')
-plt.plot(Re, InLineBending[2], color='hotpink', label='Perforated Pipe')
-plt.plot(Re, InLineBending[2], 'o', color='hotpink')
+plt.plot(Re[0], InLineBending[0], color='green', label='Pipe with Streaks')
+plt.plot(Re[0], InLineBending[0], 'o', color='green')
+plt.plot(Re[1], InLineBending[1], color='steelblue', label='Original Pipe')
+plt.plot(Re[1], InLineBending[1], 'o', color='steelblue')
+plt.plot(Re[2], InLineBending[2], color='hotpink', label='Perforated Pipe')
+plt.plot(Re[2], InLineBending[2], 'o', color='hotpink')
 
 # Labeling the units on the axis
 plt.ylabel('Bending moment (Nm)')
@@ -205,17 +213,17 @@ plt.title('In line mean Bending Moment')
 plt.legend()
 plt.show()
 
-# Plotting the in line Bending moment against the Reynolds number. Both lines and points are plotted
+# Plotting the in line Bending moment against the velocity levels. Both lines and points are plotted
 plt.plot(velocity_levels, InLineBending[0], color='green', label='Pipe with Streaks')
 plt.plot(velocity_levels, InLineBending[0], 'o', color='green')
 plt.plot(velocity_levels, InLineBending[1], color='steelblue', label='Original Pipe')
-plt.plot(velocity_levels, InLineBending[1], 'o', color='navy')
+plt.plot(velocity_levels, InLineBending[1], 'o', color='steelblue')
 plt.plot(velocity_levels, InLineBending[2], color='hotpink', label='Perforated Pipe')
 plt.plot(velocity_levels, InLineBending[2], 'o', color='hotpink')
 
 # Labeling the units on the axis
 plt.ylabel('Bending moment (Nm)')
-plt.xlabel('Re')
+plt.xlabel('velocity (m/s)')
 
 # Title is selected
 plt.title('In line mean Bending Moment')
@@ -224,15 +232,33 @@ plt.legend()
 plt.show()
 
 # Plotting the Vibration freqency against the velocity. Both lines and points are plotted
-plt.plot(velocity_levels, Vibration_freq[0], color='green', label='Pipe with Streaks')
-plt.plot(velocity_levels, Vibration_freq[0], 'o', color='green')
-plt.plot(velocity_levels, Vibration_freq[1], color='steelblue', label='Original Pipe')
-plt.plot(velocity_levels, Vibration_freq[1], 'o', color='navy')
-plt.plot(velocity_levels, Vibration_freq[2], color='hotpink', label='Perforated Pipe')
-plt.plot(velocity_levels, Vibration_freq[2], 'o', color='hotpink')
+plt.plot(velocity_levels, Vibration_mean_freq[0], color='green', label='Pipe with Streaks')
+plt.plot(velocity_levels, Vibration_mean_freq[0], 'o', color='green')
+plt.plot(velocity_levels, Vibration_mean_freq[1], color='steelblue', label='Original Pipe')
+plt.plot(velocity_levels, Vibration_mean_freq[1], 'o', color='steelblue')
+plt.plot(velocity_levels, Vibration_mean_freq[2], color='hotpink', label='Perforated Pipe')
+plt.plot(velocity_levels, Vibration_mean_freq[2], 'o', color='hotpink')
 
 # Labeling the units on the axis
 plt.xlabel('velocity (m/s)')
+plt.ylabel('vibration frequency (Hz)')
+
+# Title is selected
+plt.title('Vibration frequency')
+
+plt.legend()
+plt.show()
+
+# Plotting the Vibration freqency against the velocity. Both lines and points are plotted
+plt.plot(Re[0], Vibration_mean_freq[0], color='green', label='Pipe with Streaks')
+plt.plot(Re[0], Vibration_mean_freq[0], 'o', color='green')
+plt.plot(Re[1], Vibration_mean_freq[1], color='steelblue', label='Original Pipe')
+plt.plot(Re[1], Vibration_mean_freq[1], 'o', color='steelblue')
+plt.plot(Re[2], Vibration_mean_freq[2], color='hotpink', label='Perforated Pipe')
+plt.plot(Re[2], Vibration_mean_freq[2], 'o', color='hotpink')
+
+# Labeling the units on the axis
+plt.xlabel('Re')
 plt.ylabel('vibration frequency (Hz)')
 
 # Title is selected
