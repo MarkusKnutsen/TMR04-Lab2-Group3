@@ -42,42 +42,44 @@ directory = './bin'
 reader = read_bin(directory)
 
 # Sensors that we want to investigate
-sensors = [2,4,6]
+sensors = [2, 4, 6]
 
 # We build the indexes list to have all the data
-Y1 = np.zeros([(len(reader)),2])
-rc=0
+Y1 = np.zeros([(len(reader)), 2])
+rc = 0
 for run in reader:
-    (sample_fq, samples, sample_fq, x_axis, data, name, filename)=data_collecting_function(run, 2)
-    Y1[rc]=[0,samples]
-    rc+=1
+    (sample_fq, samples, sample_fq, x_axis, data,
+     name, filename) = data_collecting_function(run, 2)
+    Y1[rc] = [0, samples]
+    rc += 1
 Y1 = [[int(num) for num in sublist] for sublist in Y1]
-Y2=Y1
-Y3=Y1
+Y2 = Y1
+Y3 = Y1
 # List containing the index data
 indices = [0, 0, Y1, 0, Y2, 0, Y3, 0, 0, Y1]
 
 rc = 0
 
-#%%
-rc=0
-Vibration_freq=[[],[],[]]
+# %%
+rc = 0
+Vibration_freq = [[], [], []]
 for run in reader:
     for sensor in sensors:
-        Vibration_freq[round(sensor/2)-1]=np.zeros([len(reader),indices[sensor][0][1]]) #this index is the longest
-    rc+=1
+        # this index is the longest
+        Vibration_freq[round(
+            sensor/2)-1] = np.zeros([len(reader), indices[sensor][0][1]])
+    rc += 1
 
-#%%
+# %%
 # Iterating through the different runs
-rc=0
+rc = 0
 for run in reader:
 
     # Iterating through the different sensors we want to investigate in that run
     for sensor in sensors:
 
-        print('sensor= ',sensor)
+        print('sensor= ', sensor)
 
-       
         # Selecting the steady state information indices to be used when processing the signal from the sensor
         start = indices[sensor][rc][0]
         end = indices[sensor][rc][1]
@@ -88,76 +90,72 @@ for run in reader:
 
         # Filter the data slightly, to remove some high-frequency noise in the peaks and valleys of the signal
         signal = gauss_filter(data[start:end], 4)
-        
+
         # Calculating the Strouhal Number and maximum bending moment from the signal
         strouhal, moment, freq = transverse_data(
             signal, diameter[sensor], velocity_levels[rc], sample_fq, end-start)
 
-        
         # If un-commented, the signal can be plotted
-        #plot_signal(signal, start, end, x_axis[start:end], name)
+        # plot_signal(signal, start, end, x_axis[start:end], name)
         for i in range(end):
-            frequency, closest_peak, pos_peaks=instant_freq(signal, i)
-            Vibration_freq[round(sensor/2)-1][rc][i]=frequency
-        
+            frequency, closest_peak, pos_peaks = instant_freq(signal, i)
+            Vibration_freq[round(sensor/2)-1][rc][i] = frequency
 
         # Updating the run counter, and completing the iteration
     rc += 1
-    print('rc =',rc)
-    
-#%%
+    print('rc =', rc)
+
+# %%
 
 # Get the velocities
-Velocity=[[] for _ in range(len(reader))]
+Velocity = [[] for _ in range(len(reader))]
 print(Velocity)
 
-sensor=9
-rc=0
+sensor = 9
+rc = 0
 # Iterating through the different runs
 for run in reader:
-    
+
     # Selecting the steady state information indices to be used when processing the signal from the sensor
     start = indices[sensor][rc][0]
     end = indices[sensor][rc][1]
 
     # Calculating variables from the signal
     (sample_fq, samples, sample_fq, x_axis, data, name,
-    filename) = data_collecting_function(run, sensor)
+     filename) = data_collecting_function(run, sensor)
 
     # Filter the data slightly, to remove some high-frequency noise in the peaks and valleys of the signal
     signal = gauss_filter(data[start:end], 4)
-    
-        
-    # If un-commented, the signal can be plotted
-    #plot_signal(signal, start, end, x_axis[start:end], name)
-    Velocity[rc]=signal        
 
+    # If un-commented, the signal can be plotted
+    # plot_signal(signal, start, end, x_axis[start:end], name)
+    Velocity[rc] = signal
 
     # Updating the run counter, and completing the iteration
     rc += 1
-#%%
+# %%
 # Plots
-rc=0
-sensors=[2,4,6]
+rc = 0
+sensors = [2, 4, 6]
 for run in reader:
     for sensor in sensors:
-               
-        #plot against x, can be converted into time
-        x=list(range(len(Velocity[rc])))
-        
+
+        # plot against x, can be converted into time
+        x = list(range(len(Velocity[rc])))
+
         # Sample data for the two quantities
         # Create a figure and the primary axis (left y-axis)
         fig, ax1 = plt.subplots()
 
         # Plot the first quantity on the primary axis (left y-axis)
-        ax1.plot(x, Vibration_freq[round(sensor/2)-1][rc][:len(Velocity[rc])] , color='red', label='oscillation freq')
+        ax1.plot(x, Vibration_freq[round(
+            sensor/2)-1][rc][:len(Velocity[rc])], color='red', label='oscillation freq')
         ax1.set_xlabel('x')
         ax1.set_ylabel('Frequency of oscillation (Hz)', color='red')
-        #ax1.tick_params(axis='y', labelcolor='b')
-        round_thousands=round(len(x)/1000)*1000
-        nb_thousand=int(round_thousands/1000)
-        ax1.set_xticks(np.linspace(0,round_thousands,nb_thousand+1))
-
+        # ax1.tick_params(axis='y', labelcolor='b')
+        round_thousands = round(len(x)/1000)*1000
+        nb_thousand = int(round_thousands/1000)
+        ax1.set_xticks(np.linspace(0, round_thousands, nb_thousand+1))
 
         # Create a secondary axis (right y-axis) that shares the same x-axis
         ax2 = ax1.twinx()
@@ -165,7 +163,7 @@ for run in reader:
         # Plot the second quantity on the secondary axis (right y-axis)
         ax2.plot(x, Velocity[rc], color='blue', label='Velocity')
         ax2.set_ylabel('Velocity (m/s)', color='blue')
-        #ax2.tick_params(axis='y', labelcolor='r')
+        # ax2.tick_params(axis='y', labelcolor='r')
 
         # Adding legends
         lines1, labels1 = ax1.get_legend_handles_labels()
@@ -173,12 +171,10 @@ for run in reader:
         lines = lines1 + lines2
         labels = labels1 + labels2
         ax1.legend(lines, labels, loc='lower center')
-        #ax2.legend(labels2, loc='lower center')
-        
-        plt.title(f'Frequency of oscillation and velocity, run ={rc}, sensor={sensor}')
+        # ax2.legend(labels2, loc='lower center')
+
+        plt.title(
+            f'Frequency of oscillation and velocity, run ={rc}, sensor={sensor}')
         plt.show()
 
-        
-    rc+=1
-
-
+    rc += 1
